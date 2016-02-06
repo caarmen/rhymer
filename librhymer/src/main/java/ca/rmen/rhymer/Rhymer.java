@@ -19,17 +19,17 @@
 
 package ca.rmen.rhymer;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.SortedSet;
+import java.util.TreeSet;
 
 public class Rhymer {
     private final Map<String, String[]> words = new HashMap<>();
-    private final Map<String, List<String>> lastSyllableMap = new HashMap<>();
-    private final Map<String, List<String>> lastTwoSyllablesMap = new HashMap<>();
-    private final Map<String, List<String>> lastThreeSyllablesMap = new HashMap<>();
+    private final Map<String, SortedSet<String>> lastSyllableMap = new HashMap<>();
+    private final Map<String, SortedSet<String>> lastTwoSyllablesMap = new HashMap<>();
+    private final Map<String, SortedSet<String>> lastThreeSyllablesMap = new HashMap<>();
     private SyllableParser syllableParser;
 
     public Rhymer() {
@@ -51,20 +51,18 @@ public class Rhymer {
         String[] syllables = syllableParser.extractRhymingSyllables(symbols);
 
         String lastSyllable = concatenateLastSyllables(syllables, 1);
-        List<String> matches = lastSyllableMap.get(lastSyllable);
-        Collections.sort(matches);
+        Set<String> matches = lastSyllableMap.get(lastSyllable);
+        // Remove the lookup word itself.
         oneSyllableMatches = matches.toArray(new String[matches.size()]);
         if (syllables.length >= 2) {
             String lastTwoSyllables = concatenateLastSyllables(syllables, 2);
             matches = lastTwoSyllablesMap.get(lastTwoSyllables);
-            Collections.sort(matches);
             twoSyllableMatches = matches.toArray(new String[matches.size()]);
         }
 
         if (syllables.length >= 3) {
             String lastThreeSyllables = concatenateLastSyllables(syllables, 3);
             matches = lastThreeSyllablesMap.get(lastThreeSyllables);
-            Collections.sort(matches);
             threeSyllableMatches = matches.toArray(new String[matches.size()]);
         }
         return new String[][]{oneSyllableMatches, twoSyllableMatches, threeSyllableMatches};
@@ -87,16 +85,16 @@ public class Rhymer {
             String[] syllables = syllableParser.extractRhymingSyllables(symbols);
             if (syllables.length >= 3) {
                 String lastThreeSyllables = concatenateLastSyllables(syllables, 3);
-                List<String> lastThreeSyllableWords = get(lastThreeSyllablesMap, lastThreeSyllables);
+                Set<String> lastThreeSyllableWords = get(lastThreeSyllablesMap, lastThreeSyllables);
                 lastThreeSyllableWords.add(word);
             }
             if (syllables.length >= 2) {
                 String lastTwoSyllables = concatenateLastSyllables(syllables, 2);
-                List<String> lastTwoSyllableWords = get(lastTwoSyllablesMap, lastTwoSyllables);
+                Set<String> lastTwoSyllableWords = get(lastTwoSyllablesMap, lastTwoSyllables);
                 lastTwoSyllableWords.add(word);
             }
             String lastSyllable = syllables[syllables.length - 1];
-            List<String> lastSyllableWords = get(lastSyllableMap, lastSyllable);
+            Set<String> lastSyllableWords = get(lastSyllableMap, lastSyllable);
             lastSyllableWords.add(word);
         }
     }
@@ -115,10 +113,10 @@ public class Rhymer {
         return builder.toString();
     }
 
-    private static List<String> get(Map<String, List<String>> map, String key) {
-        List<String> result = map.get(key);
+    private static Set<String> get(Map<String, SortedSet<String>> map, String key) {
+        SortedSet<String> result = map.get(key);
         if (result == null) {
-            result = new ArrayList<>();
+            result = new TreeSet<>();
             map.put(key, result);
         }
         return result;
