@@ -22,6 +22,7 @@ package ca.rmen.rhymer;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
@@ -45,7 +46,7 @@ public class Rhymer {
      */
     public List<RhymeResult> getRhymingWords(String word) {
         List<RhymeResult> results = new ArrayList<>();
-        String lookupWord = word.toUpperCase();
+        String lookupWord = word.toLowerCase(Locale.US);
 
         // The word doesn't exist in our dictionary
         List<WordVariant> wordVariants = words.get(lookupWord);

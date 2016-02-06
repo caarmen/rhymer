@@ -67,7 +67,7 @@ class CmuDictionaryReader {
                 if (line.isEmpty()) continue;
                 if (line.startsWith(";;;")) continue;
                 int wordSeparator = line.indexOf("  ");
-                String word = line.substring(0, wordSeparator);
+                String word = line.substring(0, wordSeparator).toLowerCase(Locale.US);
                 int variantNumber = 0;
                 Matcher matcher = pattern.matcher(word);
                 if(matcher.matches()) {

@@ -31,7 +31,7 @@ public class RhymerCli {
     public static void main(String[] args) throws IOException {
         String word = args[0];
         Rhymer rhymer = CmuDictionary.loadRhymer();
-        List<RhymeResult> results = rhymer.getRhymingWords(word.toUpperCase());
+        List<RhymeResult> results = rhymer.getRhymingWords(word);
         for (RhymeResult result : results) {
             System.out.println("Results for " + result.variant + ":");
 

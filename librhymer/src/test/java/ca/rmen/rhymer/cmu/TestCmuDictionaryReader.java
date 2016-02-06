@@ -65,8 +65,8 @@ public class TestCmuDictionaryReader {
         Map<String, List<WordVariant>> words = readWords();
         Assert.assertNotNull(words);
         Assert.assertEquals(125074, words.size());
-        testWordSymbols("ZYNDA", new String[]{"Z", "IH1", "N", "D", "AH0"}, words);
-        testWordSymbols("ZYMAN", new String[]{"Z", "AY1", "M", "AH0", "N"}, words);
+        testWordSymbols("zynda", new String[]{"Z", "IH1", "N", "D", "AH0"}, words);
+        testWordSymbols("zyman", new String[]{"Z", "AY1", "M", "AH0", "N"}, words);
     }
 
     private void testWordSymbols(String word, String[] expectedSymbols, Map<String, List<WordVariant>> dict) {
