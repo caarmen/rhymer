@@ -19,7 +19,9 @@
 
 package ca.rmen.rhymer;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
@@ -29,6 +31,7 @@ public class Rhymer {
     private static final int THRESHOLD_TOO_MANY_RHYMES = 500;
 
     private final Map<String, String[]> words = new HashMap<>();
+    private final Map<String, Integer> wordVariants = new HashMap<>();
     private final Map<String, SortedSet<String>> lastSyllableMap = new HashMap<>();
     private final Map<String, SortedSet<String>> lastTwoSyllablesMap = new HashMap<>();
     private final Map<String, SortedSet<String>> lastThreeSyllablesMap = new HashMap<>();
@@ -101,12 +104,26 @@ public class Rhymer {
     public void buildIndex(Map<String, PhoneType> symbolMap, Map<String, String[]> words) {
         this.words.clear();
         this.words.putAll(words);
+        wordVariants.clear();
         lastSyllableMap.clear();
         lastTwoSyllablesMap.clear();
         lastThreeSyllablesMap.clear();
 
         syllableParser = new SyllableParser(symbolMap);
         for (String word : words.keySet()) {
+            if(word.matches("\\([0-9]\\)")) {
+                int variantPos = word.indexOf('(');
+            // Some words have multiple entries in the dictionary, for multiple pronunciations:
+            // ex:
+            // TUESDAY  T UW1 Z D IY0
+            // TUESDAY(1)  T UW1 Z D EY2
+            // TUESDAY(2)  T Y UW1 Z D EY2
+            // We'll store the number of variants for this word.
+                String wordRoot = word.substring(0, variantPos);
+                int variantNumber = Integer.valueOf(word.substring(variantPos+1, variantPos+3));
+                int variantCount = wordVariants.get(wordRoot);
+                if (variantCount < variantNumber) wordVariants.put(wordRoot, variantNumber);
+            }
             String[] symbols = words.get(word);
             String[] syllables = syllableParser.extractRhymingSyllables(symbols);
             if (syllables.length >= 3) {
