@@ -64,6 +64,10 @@ public class TestSyllableParser {
         testSyllableExtraction(syllableParser, new String[]{"K", "IH1", "T", "AE2", "T"}, new String[]{"IHT", "AET"});
         // GRAPH  G R AE1 F
         testSyllableExtraction(syllableParser, new String[]{"G", "R", "AE1", "F"}, new String[]{"AEF"});
+        // RECUPERATE  R IH0 K UW1 P ER0 EY2 T
+        testSyllableExtraction(syllableParser, new String[]{"R", "IH0", "K", "UW1", "P", "ER0", "EY2", "T"}, new String[]{"IHK", "UWP", "ER", "EYT"});
+        // REDECORATE  R IY0 D EH1 K ER0 EY2 T
+        testSyllableExtraction(syllableParser, new String[]{"R", "IH0", "D", "EH1", "K", "ER0", "EY2", "T"}, new String[]{"IHD", "EHK", "ER", "EYT"});
     }
 
     private void testSyllableExtraction(SyllableParser syllableParser, String[] symbols, String[] expectedSyllables) {

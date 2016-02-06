@@ -34,8 +34,10 @@ public class RhymerCli {
 
         System.out.println("One-syllable matches:");
         System.out.println(Arrays.toString(rhymingWords[0]));
+        System.out.println();
         System.out.println("Two-syllable matches:");
         System.out.println(Arrays.toString(rhymingWords[1]));
+        System.out.println();
         System.out.println("Three-syllable matches:");
         System.out.println(Arrays.toString(rhymingWords[2]));
     }

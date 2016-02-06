@@ -40,32 +40,48 @@ public class Rhymer {
      * 2) an array of two-syllable matches, and 3) an array of three-syllable matches.
      */
     public String[][] getRhymingWords(String word) {
-        String[] oneSyllableMatches = new String[0];
-        String[] twoSyllableMatches = new String[0];
-        String[] threeSyllableMatches = new String[0];
+        word = word.toUpperCase();
         String[] symbols = words.get(word);
 
         // The word doesn't exist in our dictionary
-        if (symbols == null) return new String[][]{oneSyllableMatches, twoSyllableMatches, threeSyllableMatches};
+        if (symbols == null) return new String[][]{new String[0], new String[0], new String[0]};
 
         String[] syllables = syllableParser.extractRhymingSyllables(symbols);
 
-        String lastSyllable = concatenateLastSyllables(syllables, 1);
-        Set<String> matches = lastSyllableMap.get(lastSyllable);
-        // Remove the lookup word itself.
-        oneSyllableMatches = matches.toArray(new String[matches.size()]);
+        Set<String> matches1 = lookupWords(word, syllables, 1, lastSyllableMap);
+        Set<String> matches2 = new TreeSet<>();
+        Set<String> matches3 = new TreeSet<>();
+
         if (syllables.length >= 2) {
-            String lastTwoSyllables = concatenateLastSyllables(syllables, 2);
-            matches = lastTwoSyllablesMap.get(lastTwoSyllables);
-            twoSyllableMatches = matches.toArray(new String[matches.size()]);
+            matches2 = lookupWords(word, syllables, 2, lastTwoSyllablesMap);
+            matches1.removeAll(matches2);
+        }
+        if (syllables.length >= 3) {
+            matches3 = lookupWords(word, syllables, 3, lastThreeSyllablesMap);
+            matches1.removeAll(matches3);
+            matches2.removeAll(matches3);
         }
 
-        if (syllables.length >= 3) {
-            String lastThreeSyllables = concatenateLastSyllables(syllables, 3);
-            matches = lastThreeSyllablesMap.get(lastThreeSyllables);
-            threeSyllableMatches = matches.toArray(new String[matches.size()]);
-        }
-        return new String[][]{oneSyllableMatches, twoSyllableMatches, threeSyllableMatches};
+        return new String[][]{
+                matches1.toArray(new String[matches1.size()]),
+                matches2.toArray(new String[matches2.size()]),
+                matches3.toArray(new String[matches3.size()])
+        };
+    }
+
+    /**
+     *
+     * @param word the word for which we want to find rhyming words.
+     * @param syllables the syllables of the word already parsed (we parse them before calling this method for performance).
+     * @param numberOfSyllables specifies the number of syllables to use when looking for rhyming words.
+     * @param syllablesMap map of syllables to words: the key contains syllables of numberOfSyllables syllables.
+     * @return a list of words which rhyme with the last numberOfSyllables syllables of the given word
+     */
+    private static Set<String> lookupWords(String word, String[] syllables, int numberOfSyllables, Map<String, SortedSet<String>> syllablesMap) {
+        String lastSyllables = concatenateLastSyllables(syllables, numberOfSyllables);
+        Set<String> matches = new TreeSet<>(syllablesMap.get(lastSyllables));
+        matches.remove(word);
+        return matches;
     }
 
     /**

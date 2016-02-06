@@ -20,16 +20,24 @@
 package ca.rmen.rhymer;
 
 
+import ca.rmen.rhymer.cmu.CmuDictionary;
 import org.junit.Assert;
 import org.junit.Test;
 
-// TODO add tests
+import java.io.IOException;
+import java.net.URISyntaxException;
+import java.util.Arrays;
+import java.util.List;
+
 public class TestRhymer {
 
     @Test
-    public void testRhymesCat() {
-        String[][] rhymes = new Rhymer().getRhymingWords("cat");
+    public void testRhymesRecuperate() throws IOException, URISyntaxException {
+        Rhymer rhymer = CmuDictionary.loadRhymer();
+        String[][] rhymes = rhymer.getRhymingWords("recuperate");
         Assert.assertEquals(3, rhymes.length);
+        List<String> rhymes2Syllables = Arrays.asList(rhymes[1]);
+        Assert.assertTrue(rhymes2Syllables.contains("REDECORATE"));
     }
 
 }
