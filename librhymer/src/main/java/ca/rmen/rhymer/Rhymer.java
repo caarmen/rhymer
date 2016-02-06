@@ -138,6 +138,11 @@ public class Rhymer {
 
     /**
      * @return a string concatenating the last n syllables in the array
+     * For example: if we have this word:
+     * TELEPHONE:
+     *   symbols:  T,EH1,L,AH0,F,OW2,N
+     *   syllables: EHL,AHF,OWN
+     * And if we want the last 2 syllables, we will return "AHFOWN"
      */
     private static String concatenateLastSyllables(String[] syllables, int n) {
         if (syllables.length < n)
