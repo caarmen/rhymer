@@ -37,57 +37,83 @@ public class Rhymer {
     private final Map<String, SortedSet<String>> lastThreeSyllablesMap = new HashMap<>();
     private SyllableParser syllableParser;
 
+    public static class RhymeResult {
+        public final String variant;
+        public final String[] oneSyllableRhymes;
+        public final String[] twoSyllableRhymes;
+        public final String[] threeSyllableRhymes;
+
+        public RhymeResult(String variant, String[] oneSyllableRhymes, String[] twoSyllableRhymes, String[] threeSyllableRhymes) {
+            this.variant = variant;
+            this.oneSyllableRhymes = oneSyllableRhymes;
+            this.twoSyllableRhymes = twoSyllableRhymes;
+            this.threeSyllableRhymes = threeSyllableRhymes;
+        }
+    }
+
     public Rhymer() {
     }
 
     /**
-     * @return an array of three elements: 1) an array of one-syllable matches,
-     * 2) an array of two-syllable matches, and 3) an array of three-syllable matches.
+     * @return a list of RhymeResults.  Most words will have one RhymeResult.  Words with multiple possible
+     * pronunciations will have multiple RhymeResults.
      */
-    public String[][] getRhymingWords(String word) {
-        word = word.toUpperCase();
-        String[] symbols = words.get(word);
+    public List<RhymeResult> getRhymingWords(String word) {
+        List<RhymeResult> results = new ArrayList<>();
+        String lookupWord = word.toUpperCase();
 
         // The word doesn't exist in our dictionary
-        if (symbols == null) return new String[][]{new String[0], new String[0], new String[0]};
+        if (!words.containsKey(lookupWord)) return results;
 
-        String[] syllables = syllableParser.extractRhymingSyllables(symbols);
-
-        Set<String> matches1 = lookupWords(word, syllables, 1, lastSyllableMap);
-        Set<String> matches2 = new TreeSet<>();
-        Set<String> matches3 = new TreeSet<>();
-
-        if (syllables.length >= 2) {
-            matches2 = lookupWords(word, syllables, 2, lastTwoSyllablesMap);
-            matches1.removeAll(matches2);
+        List<String> lookupWordVariants = new ArrayList<>();
+        lookupWordVariants.add(lookupWord);
+        Integer variantCount = wordVariants.get(lookupWord);
+        if (variantCount != null) {
+            for (int i = 1; i <= variantCount; i++) {
+                lookupWordVariants.add(lookupWord + "(" + i + ")");
+            }
         }
-        if (syllables.length >= 3) {
-            matches3 = lookupWords(word, syllables, 3, lastThreeSyllablesMap);
-            matches1.removeAll(matches3);
-            matches2.removeAll(matches3);
-        }
+        for (String lookupWordVariant : lookupWordVariants) {
+            String[] symbols = words.get(lookupWordVariant);
 
-        // Some words, like "puppy", match way to many words.... any word
-        // ending with an "ee" sound (IY0 phone).  If we end up in this situation,
-        // completely ignore all the one-syllable matches, and only return
-        // 2 and 3 syllable matches.
-        if (matches1.size() > THRESHOLD_TOO_MANY_RHYMES && matches2.size() > 0) {
-            matches1.clear();
-        }
+            String[] syllables = syllableParser.extractRhymingSyllables(symbols);
 
-        return new String[][]{
-                matches1.toArray(new String[matches1.size()]),
-                matches2.toArray(new String[matches2.size()]),
-                matches3.toArray(new String[matches3.size()])
-        };
+            Set<String> matches1 = lookupWords(lookupWordVariant, syllables, 1, lastSyllableMap);
+            Set<String> matches2 = new TreeSet<>();
+            Set<String> matches3 = new TreeSet<>();
+
+            if (syllables.length >= 2) {
+                matches2 = lookupWords(lookupWordVariant, syllables, 2, lastTwoSyllablesMap);
+                matches1.removeAll(matches2);
+            }
+            if (syllables.length >= 3) {
+                matches3 = lookupWords(lookupWordVariant, syllables, 3, lastThreeSyllablesMap);
+                matches1.removeAll(matches3);
+                matches2.removeAll(matches3);
+            }
+
+            // Some words, like "puppy", match way to many words.... any word
+            // ending with an "ee" sound (IY0 phone).  If we end up in this situation,
+            // completely ignore all the one-syllable matches, and only return
+            // 2 and 3 syllable matches.
+            if (matches1.size() > THRESHOLD_TOO_MANY_RHYMES && matches2.size() > 0) {
+                matches1.clear();
+            }
+
+            RhymeResult result = new RhymeResult(lookupWordVariant,
+                    matches1.toArray(new String[matches1.size()]),
+                    matches2.toArray(new String[matches2.size()]),
+                    matches3.toArray(new String[matches3.size()]));
+            results.add(result);
+        }
+        return results;
     }
 
     /**
-     *
-     * @param word the word for which we want to find rhyming words.
-     * @param syllables the syllables of the word already parsed (we parse them before calling this method for performance).
+     * @param word              the word for which we want to find rhyming words.
+     * @param syllables         the syllables of the word already parsed (we parse them before calling this method for performance).
      * @param numberOfSyllables specifies the number of syllables to use when looking for rhyming words.
-     * @param syllablesMap map of syllables to words: the key contains syllables of numberOfSyllables syllables.
+     * @param syllablesMap      map of syllables to words: the key contains syllables of numberOfSyllables syllables.
      * @return a list of words which rhyme with the last numberOfSyllables syllables of the given word
      */
     private static Set<String> lookupWords(String word, String[] syllables, int numberOfSyllables, Map<String, SortedSet<String>> syllablesMap) {
@@ -111,18 +137,18 @@ public class Rhymer {
 
         syllableParser = new SyllableParser(symbolMap);
         for (String word : words.keySet()) {
-            if(word.matches("\\([0-9]\\)")) {
+            if (word.matches("^.*\\([0-9]\\).*$")) {
                 int variantPos = word.indexOf('(');
-            // Some words have multiple entries in the dictionary, for multiple pronunciations:
-            // ex:
-            // TUESDAY  T UW1 Z D IY0
-            // TUESDAY(1)  T UW1 Z D EY2
-            // TUESDAY(2)  T Y UW1 Z D EY2
-            // We'll store the number of variants for this word.
+                // Some words have multiple entries in the dictionary, for multiple pronunciations:
+                // ex:
+                // TUESDAY  T UW1 Z D IY0
+                // TUESDAY(1)  T UW1 Z D EY2
+                // TUESDAY(2)  T Y UW1 Z D EY2
+                // We'll store the number of variants for this word.
                 String wordRoot = word.substring(0, variantPos);
-                int variantNumber = Integer.valueOf(word.substring(variantPos+1, variantPos+3));
-                int variantCount = wordVariants.get(wordRoot);
-                if (variantCount < variantNumber) wordVariants.put(wordRoot, variantNumber);
+                int variantNumber = Integer.valueOf(word.substring(variantPos + 1, variantPos + 2));
+                Integer variantCount = wordVariants.get(wordRoot);
+                if (variantCount == null || variantCount < variantNumber) wordVariants.put(wordRoot, variantNumber);
             }
             String[] symbols = words.get(word);
             String[] syllables = syllableParser.extractRhymingSyllables(symbols);

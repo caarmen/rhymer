@@ -46,18 +46,23 @@ public class TestRhymer {
     }
 
     private void testShouldRhyme(Rhymer rhymer, String word1, String word2, int numberOfSyllables) {
-        String[][] rhymes = rhymer.getRhymingWords(word1);
-        Assert.assertEquals(3, rhymes.length);
-        List<String> rhymingWords = Arrays.asList(rhymes[numberOfSyllables - 1]);
-        Assert.assertTrue(rhymingWords.contains(word2.toUpperCase()));
+        List<Rhymer.RhymeResult> results = rhymer.getRhymingWords(word1);
+        Assert.assertTrue(results.size() == 1);
+        Rhymer.RhymeResult result = results.get(0);
+        String[] rhymes = numberOfSyllables == 1? result.oneSyllableRhymes : numberOfSyllables == 2 ? result.twoSyllableRhymes : result.threeSyllableRhymes;
+        List<String> rhymingWords = Arrays.asList(rhymes);
+        Assert.assertTrue(word1 + " should rhyme with " + word2, rhymingWords.contains(word2.toUpperCase()));
     }
 
     private void testShouldntRhyme(Rhymer rhymer, String word1, String word2) {
-        String[][] rhymes = rhymer.getRhymingWords(word1);
-        Assert.assertEquals(3, rhymes.length);
-        for (int i=0; i < 3; i++){
-            List<String> rhymingWords = Arrays.asList(rhymes[i]);
-            Assert.assertFalse(rhymingWords.contains(word2.toUpperCase()));
+        List<Rhymer.RhymeResult> results = rhymer.getRhymingWords(word1);
+        for (Rhymer.RhymeResult result : results) {
+            List<String> rhymingWords = Arrays.asList(result.oneSyllableRhymes);
+            Assert.assertFalse(word1 + " shouldn't match with " + word2, rhymingWords.contains(word2.toUpperCase()));
+            rhymingWords = Arrays.asList(result.twoSyllableRhymes);
+            Assert.assertFalse(word1 + " shouldn't match with " + word2, rhymingWords.contains(word2.toUpperCase()));
+            rhymingWords = Arrays.asList(result.threeSyllableRhymes);
+            Assert.assertFalse(word1 + " shouldn't match with " + word2, rhymingWords.contains(word2.toUpperCase()));
         }
     }
 

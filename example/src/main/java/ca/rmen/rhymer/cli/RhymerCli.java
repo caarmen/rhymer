@@ -20,25 +20,30 @@
 package ca.rmen.rhymer.cli;
 
 import ca.rmen.rhymer.Rhymer;
+import ca.rmen.rhymer.Rhymer.RhymeResult;
 import ca.rmen.rhymer.cmu.CmuDictionary;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Arrays;
+import java.util.List;
 
 public class RhymerCli {
     public static void main(String[] args) throws IOException, URISyntaxException {
         String word = args[0];
         Rhymer rhymer = CmuDictionary.loadRhymer();
-        String[][] rhymingWords = rhymer.getRhymingWords(word.toUpperCase());
+        List<RhymeResult> results = rhymer.getRhymingWords(word.toUpperCase());
+        for (RhymeResult result : results) {
+            System.out.println("Results for " + result.variant + ":");
 
-        System.out.println("One-syllable matches:");
-        System.out.println(Arrays.toString(rhymingWords[0]));
-        System.out.println();
-        System.out.println("Two-syllable matches:");
-        System.out.println(Arrays.toString(rhymingWords[1]));
-        System.out.println();
-        System.out.println("Three-syllable matches:");
-        System.out.println(Arrays.toString(rhymingWords[2]));
+            System.out.println("  One-syllable matches:");
+            System.out.println("    " + Arrays.toString(result.oneSyllableRhymes));
+            System.out.println();
+            System.out.println("  Two-syllable matches:");
+            System.out.println("    " + Arrays.toString(result.twoSyllableRhymes));
+            System.out.println();
+            System.out.println("  Three-syllable matches:");
+            System.out.println("    " + Arrays.toString(result.threeSyllableRhymes));
+        }
     }
 }
