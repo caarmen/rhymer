@@ -1,0 +1,28 @@
+group 'ca.rmen'
+version '1.0-SNAPSHOT'
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+repositories {
+    mavenCentral()
+}
+
+// create a single Jar with all dependencies
+// http://www.mkyong.com/gradle/gradle-create-a-jar-file-with-dependencies/
+task cliJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Title': 'Rhymer Cli',
+                'Implementation-Version': version,
+                'Main-Class': 'ca.rmen.rhymer.cli.RhymerCli'
+    }
+    baseName = project.name + '-all'
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    with jar
+}
+
+dependencies {
+    compile project(':librhymer')
+}

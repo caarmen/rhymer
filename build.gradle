@@ -1,0 +1,11 @@
+buildscript {
+    repositories {
+
+    }
+}
+
+allprojects {
+    repositories {
+
+    }
+}
