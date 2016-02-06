@@ -21,7 +21,7 @@ To build the library:
 ```
 
 
-This will create the file `./librhymer/build/libs/librhymer-<version>.jar` which you can include in your project.
+This will create the file `./library/build/libs/rhymer-<version>.jar` which you can include in your project.
 
 To deploy the jar to your local maven repository:
 
@@ -34,7 +34,7 @@ Then include this maven dependency:
 ```
     <dependency>
       <groupId>ca.rmen</groupId>
-      <artifactId>librhymer</artifactId>
+      <artifactId>rhymer</artifactId>
       <version>1.0-SNAPSHOT</version>
     </dependency>
 ```
@@ -42,5 +42,5 @@ Then include this maven dependency:
 Or gradle dependency:
 
 ```
-    compile 'ca.rmen:librhymer:1.0-SNAPSHOT'
+    compile 'ca.rmen:rhymer:1.0-SNAPSHOT'
 ```

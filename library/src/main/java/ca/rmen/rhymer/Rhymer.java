@@ -37,9 +37,6 @@ public class Rhymer {
     private final Map<String, SortedSet<String>> lastThreeSyllablesMap = new HashMap<>();
     private SyllableParser syllableParser;
 
-    public Rhymer() {
-    }
-
     /**
      * @return a list of RhymeResults.  Most words will have one RhymeResult.  Words with multiple possible
      * pronunciations (word variants) will have one RhymeResult per variant.
@@ -121,17 +118,14 @@ public class Rhymer {
                 String[] syllables = syllableParser.extractRhymingSyllables(wordVariant.symbols);
                 if (syllables.length >= 3) {
                     String lastThreeSyllables = concatenateLastSyllables(syllables, 3);
-                    Set<String> lastThreeSyllableWords = get(lastThreeSyllablesMap, lastThreeSyllables);
-                    lastThreeSyllableWords.add(word);
+                    indexWord(lastThreeSyllablesMap, lastThreeSyllables, word);
                 }
                 if (syllables.length >= 2) {
                     String lastTwoSyllables = concatenateLastSyllables(syllables, 2);
-                    Set<String> lastTwoSyllableWords = get(lastTwoSyllablesMap, lastTwoSyllables);
-                    lastTwoSyllableWords.add(word);
+                    indexWord(lastTwoSyllablesMap, lastTwoSyllables, word);
                 }
                 String lastSyllable = syllables[syllables.length - 1];
-                Set<String> lastSyllableWords = get(lastSyllableMap, lastSyllable);
-                lastSyllableWords.add(word);
+                indexWord(lastSyllableMap, lastSyllable, word);
             }
         }
     }
@@ -155,13 +149,17 @@ public class Rhymer {
         return builder.toString();
     }
 
-    private static Set<String> get(Map<String, SortedSet<String>> map, String key) {
-        SortedSet<String> result = map.get(key);
-        if (result == null) {
-            result = new TreeSet<>();
-            map.put(key, result);
+    /**
+     * Add a mapping for the given syllable to the given word, to the given map.
+     */
+    private void indexWord(Map<String, SortedSet<String>> map, String syllable, String word) {
+        SortedSet<String> wordsForSyllable = map.get(syllable);
+        if (wordsForSyllable == null) {
+            wordsForSyllable = new TreeSet<>();
+            map.put(syllable, wordsForSyllable);
         }
-        return result;
+        wordsForSyllable.add(word);
     }
+
 
 }
