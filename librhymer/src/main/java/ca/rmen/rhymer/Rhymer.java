@@ -63,7 +63,7 @@ public class Rhymer {
 
         if (syllables.length >= 3) {
             String lastThreeSyllables = concatenateLastSyllables(syllables, 3);
-            matches = lastTwoSyllablesMap.get(lastThreeSyllables);
+            matches = lastThreeSyllablesMap.get(lastThreeSyllables);
             Collections.sort(matches);
             threeSyllableMatches = matches.toArray(new String[matches.size()]);
         }
