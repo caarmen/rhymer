@@ -22,9 +22,9 @@ package ca.rmen.rhymer.cmu;
 import ca.rmen.rhymer.PhoneType;
 
 import java.io.BufferedReader;
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -35,11 +35,11 @@ class CmuDictionaryReader {
         // Prevent instantiation of a utility class
     }
 
-    static Map<String, PhoneType> readPhones(File file) throws IOException {
+    static Map<String, PhoneType> readPhones(InputStream is) throws IOException {
         Map<String, PhoneType> phones = new HashMap<>();
         BufferedReader bufferedReader = null;
         try {
-            bufferedReader = new BufferedReader(new FileReader(file));
+            bufferedReader = new BufferedReader(new InputStreamReader(is));
             for (String line = bufferedReader.readLine(); line != null; line = bufferedReader.readLine()) {
                 String[] tokens = line.split("\t");
                 String symbol = tokens[0];
@@ -52,11 +52,11 @@ class CmuDictionaryReader {
         return phones;
     }
 
-    static Map<String, String[]> readWords(File file) throws IOException {
+    static Map<String, String[]> readWords(InputStream is) throws IOException {
         Map<String, String[]> words = new HashMap<>();
         BufferedReader bufferedReader = null;
         try {
-            bufferedReader = new BufferedReader(new FileReader(file));
+            bufferedReader = new BufferedReader(new InputStreamReader(is));
             for (String line = bufferedReader.readLine(); line != null; line = bufferedReader.readLine()) {
                 if (line.isEmpty()) continue;
                 if (line.startsWith(";;;")) continue;

@@ -24,21 +24,21 @@ import ca.rmen.rhymer.PhoneType;
 import org.junit.Assert;
 import org.junit.Test;
 
-import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Map;
 
 public class TestCmuDictionaryReader {
 
-    private static final String WORDS_FILE = "src/main/resources/cmudict-0.7b";
-    private static final String PHONES_FILE = "src/main/resources/cmudict-0.7b.phones";
+    private static final String WORDS_FILE = "src/main/resources/dictionary_files/cmudict-0.7b";
+    private static final String PHONES_FILE = "src/main/resources/dictionary_files/cmudict-0.7b.phones";
 
     public static Map<String, PhoneType> readPhones() throws IOException {
-        return CmuDictionaryReader.readPhones(new File(PHONES_FILE));
+        return CmuDictionaryReader.readPhones(new FileInputStream(PHONES_FILE));
     }
 
     public static Map<String, String[]> readWords() throws IOException {
-        return CmuDictionaryReader.readWords(new File(WORDS_FILE));
+        return CmuDictionaryReader.readWords(new FileInputStream(WORDS_FILE));
     }
 
     /**

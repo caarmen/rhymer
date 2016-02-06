@@ -7,7 +7,7 @@ To test out the library on the command-line:
 
 ```
     ./gradlew clean cliJar
-    java -jar example/build/libs/example-all-1.0-SNAPSHOT.jar  librhymer/src/main/resources/cmudict-0.7b.phones librhymer/src/main/resources/cmudict-0.7b <word to rhyme>
+    java -jar example/build/libs/example-all-1.0-SNAPSHOT.jar <word to rhyme>
 ```
 
 This brand new library is not yet available on a remote maven repository.

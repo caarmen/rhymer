@@ -22,16 +22,14 @@ package ca.rmen.rhymer.cli;
 import ca.rmen.rhymer.Rhymer;
 import ca.rmen.rhymer.cmu.CmuDictionary;
 
-import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Arrays;
 
 public class RhymerCli {
-    public static void main(String[] args) throws IOException {
-        String symbolsFile = args[0];
-        String wordsFile = args[1];
-        String word = args[2];
-        Rhymer rhymer = CmuDictionary.loadRhymer(new File(symbolsFile), new File(wordsFile));
+    public static void main(String[] args) throws IOException, URISyntaxException {
+        String word = args[0];
+        Rhymer rhymer = CmuDictionary.loadRhymer();
         String[][] rhymingWords = rhymer.getRhymingWords(word.toUpperCase());
 
         System.out.println("One-syllable matches:");

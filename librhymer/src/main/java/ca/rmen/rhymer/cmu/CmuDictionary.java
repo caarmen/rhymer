@@ -22,24 +22,29 @@ package ca.rmen.rhymer.cmu;
 import ca.rmen.rhymer.PhoneType;
 import ca.rmen.rhymer.Rhymer;
 
-import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
 import java.util.Map;
 
 public class CmuDictionary {
 
+    private static final String VERSION = "cmudict-0.7b";
+    private static final String ROOT_FOLDER = "/dictionary_files/";
+    private static final String WORDS_FILE = ROOT_FOLDER + VERSION;
+    private static final String PHONES_FILE = ROOT_FOLDER + VERSION + ".phones";
     private CmuDictionary() {
     }
 
     /**
      * Build a rhymer based on the CMU dictionary files.
-     * @param symbolsFile the location of the CMU file mapping phone symbols to phone types.
-     * @param wordsFile the location of the CMU file mapping English words to symbols.
      * @throws IOException
      */
-    public static Rhymer loadRhymer(File symbolsFile, File wordsFile) throws IOException {
+    public static Rhymer loadRhymer() throws IOException, URISyntaxException {
+        InputStream phonesFile = CmuDictionary.class.getResourceAsStream(PHONES_FILE);
+        InputStream wordsFile = CmuDictionary.class.getResourceAsStream(WORDS_FILE);
         Rhymer rhymer = new Rhymer();
-        Map<String, PhoneType> symbolsMap = CmuDictionaryReader.readPhones(symbolsFile);
+        Map<String, PhoneType> symbolsMap = CmuDictionaryReader.readPhones(phonesFile);
         Map<String, String[]> wordsMap = CmuDictionaryReader.readWords(wordsFile);
         rhymer.buildIndex(symbolsMap, wordsMap);
         return rhymer;
