@@ -26,6 +26,8 @@ import java.util.SortedSet;
 import java.util.TreeSet;
 
 public class Rhymer {
+    private static final int THRESHOLD_TOO_MANY_RHYMES = 500;
+
     private final Map<String, String[]> words = new HashMap<>();
     private final Map<String, SortedSet<String>> lastSyllableMap = new HashMap<>();
     private final Map<String, SortedSet<String>> lastTwoSyllablesMap = new HashMap<>();
@@ -60,6 +62,14 @@ public class Rhymer {
             matches3 = lookupWords(word, syllables, 3, lastThreeSyllablesMap);
             matches1.removeAll(matches3);
             matches2.removeAll(matches3);
+        }
+
+        // Some words, like "puppy", match way to many words.... any word
+        // ending with an "ee" sound (IY0 phone).  If we end up in this situation,
+        // completely ignore all the one-syllable matches, and only return
+        // 2 and 3 syllable matches.
+        if (matches1.size() > THRESHOLD_TOO_MANY_RHYMES && matches2.size() > 0) {
+            matches1.clear();
         }
 
         return new String[][]{

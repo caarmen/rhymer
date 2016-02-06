@@ -32,12 +32,33 @@ import java.util.List;
 public class TestRhymer {
 
     @Test
-    public void testRhymesRecuperate() throws IOException, URISyntaxException {
+    public void testRhymes() throws IOException, URISyntaxException {
         Rhymer rhymer = CmuDictionary.loadRhymer();
-        String[][] rhymes = rhymer.getRhymingWords("recuperate");
+        testShouldRhyme(rhymer, "recuperate", "redecorate", 2);
+        testShouldRhyme(rhymer, "rhyme", "paradigm", 1);
+        testShouldRhyme(rhymer, "low", "hello", 1);
+    }
+
+    @Test
+    public void testNotRhymes() throws IOException, URISyntaxException {
+        Rhymer rhymer = CmuDictionary.loadRhymer();
+        testShouldntRhyme(rhymer, "puppy", "happy");
+    }
+
+    private void testShouldRhyme(Rhymer rhymer, String word1, String word2, int numberOfSyllables) {
+        String[][] rhymes = rhymer.getRhymingWords(word1);
         Assert.assertEquals(3, rhymes.length);
-        List<String> rhymes2Syllables = Arrays.asList(rhymes[1]);
-        Assert.assertTrue(rhymes2Syllables.contains("REDECORATE"));
+        List<String> rhymingWords = Arrays.asList(rhymes[numberOfSyllables - 1]);
+        Assert.assertTrue(rhymingWords.contains(word2.toUpperCase()));
+    }
+
+    private void testShouldntRhyme(Rhymer rhymer, String word1, String word2) {
+        String[][] rhymes = rhymer.getRhymingWords(word1);
+        Assert.assertEquals(3, rhymes.length);
+        for (int i=0; i < 3; i++){
+            List<String> rhymingWords = Arrays.asList(rhymes[i]);
+            Assert.assertFalse(rhymingWords.contains(word2.toUpperCase()));
+        }
     }
 
 }
