@@ -26,6 +26,7 @@ import org.junit.Test;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Map;
 
 public class TestSyllableParser {
@@ -36,16 +37,19 @@ public class TestSyllableParser {
     @Test
     public void testAllSyllables() throws IOException {
         Map<String, PhoneType> phones = TestCmuDictionaryReader.readPhones();
-        Map<String, String[]> words = TestCmuDictionaryReader.readWords();
+        Map<String, List<WordVariant>> words = TestCmuDictionaryReader.readWords();
         Assert.assertNotNull(words);
         SyllableParser syllableParser = new SyllableParser(phones);
         for (String word : words.keySet()) {
-            String[] symbols = words.get(word);
-            Assert.assertNotNull(symbols);
-            Assert.assertTrue("word " + word + " has no symbols", symbols.length >= 1);
-            String[] syllables = syllableParser.extractRhymingSyllables(symbols);
-            Assert.assertNotNull(syllables);
-            Assert.assertTrue("word " + word + " has no syllables", syllables.length >= 1);
+            List<WordVariant> wordVariants = words.get(word);
+            for(WordVariant wordVariant : wordVariants) {
+                String[] symbols = wordVariant.symbols;
+                Assert.assertNotNull(symbols);
+                Assert.assertTrue("word " + word + " has no symbols", symbols.length >= 1);
+                String[] syllables = syllableParser.extractRhymingSyllables(symbols);
+                Assert.assertNotNull(syllables);
+                Assert.assertTrue("word " + word + " has no syllables", syllables.length >= 1);
+            }
         }
     }
 

@@ -25,14 +25,13 @@ import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
 
 public class TestRhymer {
 
     @Test
-    public void testRhymes() throws IOException, URISyntaxException {
+    public void testRhymes() throws IOException {
         Rhymer rhymer = CmuDictionary.loadRhymer();
         testShouldRhyme(rhymer, "recuperate", "redecorate", 2);
         testShouldRhyme(rhymer, "rhyme", "paradigm", 1);
@@ -40,23 +39,23 @@ public class TestRhymer {
     }
 
     @Test
-    public void testNotRhymes() throws IOException, URISyntaxException {
+    public void testNotRhymes() throws IOException {
         Rhymer rhymer = CmuDictionary.loadRhymer();
         testShouldntRhyme(rhymer, "puppy", "happy");
     }
 
     private void testShouldRhyme(Rhymer rhymer, String word1, String word2, int numberOfSyllables) {
-        List<Rhymer.RhymeResult> results = rhymer.getRhymingWords(word1);
+        List<RhymeResult> results = rhymer.getRhymingWords(word1);
         Assert.assertTrue(results.size() == 1);
-        Rhymer.RhymeResult result = results.get(0);
+        RhymeResult result = results.get(0);
         String[] rhymes = numberOfSyllables == 1? result.oneSyllableRhymes : numberOfSyllables == 2 ? result.twoSyllableRhymes : result.threeSyllableRhymes;
         List<String> rhymingWords = Arrays.asList(rhymes);
         Assert.assertTrue(word1 + " should rhyme with " + word2, rhymingWords.contains(word2.toUpperCase()));
     }
 
     private void testShouldntRhyme(Rhymer rhymer, String word1, String word2) {
-        List<Rhymer.RhymeResult> results = rhymer.getRhymingWords(word1);
-        for (Rhymer.RhymeResult result : results) {
+        List<RhymeResult> results = rhymer.getRhymingWords(word1);
+        for (RhymeResult result : results) {
             List<String> rhymingWords = Arrays.asList(result.oneSyllableRhymes);
             Assert.assertFalse(word1 + " shouldn't match with " + word2, rhymingWords.contains(word2.toUpperCase()));
             rhymingWords = Arrays.asList(result.twoSyllableRhymes);
@@ -65,5 +64,4 @@ public class TestRhymer {
             Assert.assertFalse(word1 + " shouldn't match with " + word2, rhymingWords.contains(word2.toUpperCase()));
         }
     }
-
 }

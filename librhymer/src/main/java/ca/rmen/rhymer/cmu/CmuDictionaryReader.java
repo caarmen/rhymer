@@ -20,14 +20,19 @@
 package ca.rmen.rhymer.cmu;
 
 import ca.rmen.rhymer.PhoneType;
+import ca.rmen.rhymer.WordVariant;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 class CmuDictionaryReader {
 
@@ -52,18 +57,31 @@ class CmuDictionaryReader {
         return phones;
     }
 
-    static Map<String, String[]> readWords(InputStream is) throws IOException {
-        Map<String, String[]> words = new HashMap<>();
+    static Map<String, List<WordVariant>> readWords(InputStream is) throws IOException {
+        Map<String, List<WordVariant>> words = new HashMap<>();
         BufferedReader bufferedReader = null;
         try {
             bufferedReader = new BufferedReader(new InputStreamReader(is));
+            Pattern pattern = Pattern.compile("(^.*)\\(([0-9])\\).*$");
             for (String line = bufferedReader.readLine(); line != null; line = bufferedReader.readLine()) {
                 if (line.isEmpty()) continue;
                 if (line.startsWith(";;;")) continue;
                 int wordSeparator = line.indexOf("  ");
                 String word = line.substring(0, wordSeparator);
+                int variantNumber = 0;
+                Matcher matcher = pattern.matcher(word);
+                if(matcher.matches()) {
+                    word = matcher.group(1);
+                    variantNumber = Integer.valueOf(matcher.group(2));
+                }
                 String[] phones = line.substring(wordSeparator+2).split(" ");
-                words.put(word, phones);
+                WordVariant wordVariant = new WordVariant(variantNumber, phones);
+                List<WordVariant> wordVariants = words.get(word);
+                if(wordVariants == null) {
+                    wordVariants = new ArrayList<>();
+                    words.put(word, wordVariants);
+                }
+                wordVariants.add(wordVariant);
             }
         } finally {
             if (bufferedReader != null) bufferedReader.close();

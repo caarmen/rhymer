@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-public class SyllableParser {
+class SyllableParser {
     private final Map<String, PhoneType> symbolPhoneMap;
 
     public SyllableParser(Map<String, PhoneType> symbolPhoneMap) {

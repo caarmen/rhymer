@@ -21,10 +21,11 @@ package ca.rmen.rhymer.cmu;
 
 import ca.rmen.rhymer.PhoneType;
 import ca.rmen.rhymer.Rhymer;
+import ca.rmen.rhymer.WordVariant;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
+import java.util.List;
 import java.util.Map;
 
 public class CmuDictionary {
@@ -40,12 +41,12 @@ public class CmuDictionary {
      * Build a rhymer based on the CMU dictionary files.
      * @throws IOException
      */
-    public static Rhymer loadRhymer() throws IOException, URISyntaxException {
+    public static Rhymer loadRhymer() throws IOException {
         InputStream phonesFile = CmuDictionary.class.getResourceAsStream(PHONES_FILE);
         InputStream wordsFile = CmuDictionary.class.getResourceAsStream(WORDS_FILE);
         Rhymer rhymer = new Rhymer();
         Map<String, PhoneType> symbolsMap = CmuDictionaryReader.readPhones(phonesFile);
-        Map<String, String[]> wordsMap = CmuDictionaryReader.readWords(wordsFile);
+        Map<String, List<WordVariant>> wordsMap = CmuDictionaryReader.readWords(wordsFile);
         rhymer.buildIndex(symbolsMap, wordsMap);
         return rhymer;
     }

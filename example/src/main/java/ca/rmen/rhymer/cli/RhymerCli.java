@@ -19,17 +19,16 @@
 
 package ca.rmen.rhymer.cli;
 
+import ca.rmen.rhymer.RhymeResult;
 import ca.rmen.rhymer.Rhymer;
-import ca.rmen.rhymer.Rhymer.RhymeResult;
 import ca.rmen.rhymer.cmu.CmuDictionary;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.Arrays;
 import java.util.List;
 
 public class RhymerCli {
-    public static void main(String[] args) throws IOException, URISyntaxException {
+    public static void main(String[] args) throws IOException {
         String word = args[0];
         Rhymer rhymer = CmuDictionary.loadRhymer();
         List<RhymeResult> results = rhymer.getRhymingWords(word.toUpperCase());

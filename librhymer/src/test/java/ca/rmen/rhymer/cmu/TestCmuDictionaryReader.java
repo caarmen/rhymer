@@ -21,11 +21,13 @@ package ca.rmen.rhymer.cmu;
 
 
 import ca.rmen.rhymer.PhoneType;
+import ca.rmen.rhymer.WordVariant;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.List;
 import java.util.Map;
 
 public class TestCmuDictionaryReader {
@@ -37,7 +39,7 @@ public class TestCmuDictionaryReader {
         return CmuDictionaryReader.readPhones(new FileInputStream(PHONES_FILE));
     }
 
-    public static Map<String, String[]> readWords() throws IOException {
+    public static Map<String, List<WordVariant>> readWords() throws IOException {
         return CmuDictionaryReader.readWords(new FileInputStream(WORDS_FILE));
     }
 
@@ -60,15 +62,18 @@ public class TestCmuDictionaryReader {
      */
     @Test
     public void testLoadWords() throws IOException {
-        Map<String, String[]> words = readWords();
+        Map<String, List<WordVariant>> words = readWords();
         Assert.assertNotNull(words);
-        Assert.assertEquals(133854, words.size());
+        Assert.assertEquals(125074, words.size());
         testWordSymbols("ZYNDA", new String[]{"Z", "IH1", "N", "D", "AH0"}, words);
         testWordSymbols("ZYMAN", new String[]{"Z", "AY1", "M", "AH0", "N"}, words);
     }
 
-    private void testWordSymbols(String word, String[] expectedSymbols, Map<String, String[]> dict) {
-        String[] actualSymbols = dict.get(word);
+    private void testWordSymbols(String word, String[] expectedSymbols, Map<String, List<WordVariant>> dict) {
+        List<WordVariant> wordVariants = dict.get(word);
+        Assert.assertNotNull(wordVariants);
+        Assert.assertTrue(wordVariants.size() > 0);
+        String[] actualSymbols = wordVariants.get(0).symbols;
         Assert.assertNotNull(actualSymbols);
         Assert.assertEquals("Expected and actual symbols list are not the same size for word " + word, expectedSymbols.length, actualSymbols.length);
         Assert.assertArrayEquals("Error parsing word " + word, expectedSymbols, actualSymbols);
