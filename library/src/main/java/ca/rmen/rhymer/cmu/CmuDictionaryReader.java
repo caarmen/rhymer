@@ -57,7 +57,7 @@ class CmuDictionaryReader {
         return phones;
     }
 
-    static Map<String, List<WordVariant>> readWords(InputStream is) throws IOException {
+    static Map<String, List<WordVariant>> readWords(SyllableParser syllableParser, InputStream is) throws IOException {
         Map<String, List<WordVariant>> words = new HashMap<>();
         BufferedReader bufferedReader = null;
         try {
@@ -75,7 +75,11 @@ class CmuDictionaryReader {
                     variantNumber = Integer.valueOf(matcher.group(2));
                 }
                 String[] phones = line.substring(wordSeparator+2).split(" ");
-                WordVariant wordVariant = new WordVariant(variantNumber, phones);
+                String[] syllables = syllableParser.extractRhymingSyllables(phones);
+                String lastRhymingSyllable = concatenateLastSyllables(syllables, 1);
+                String lastTwoRhymingSyllables = concatenateLastSyllables(syllables, 2);
+                String lastThreeRhymingSyllables = concatenateLastSyllables(syllables, 3);
+                WordVariant wordVariant = new WordVariant(variantNumber, lastRhymingSyllable, lastTwoRhymingSyllables, lastThreeRhymingSyllables);
                 List<WordVariant> wordVariants = words.get(word);
                 if(wordVariants == null) {
                     wordVariants = new ArrayList<>();
@@ -87,6 +91,24 @@ class CmuDictionaryReader {
             if (bufferedReader != null) bufferedReader.close();
         }
         return words;
+    }
+
+    /**
+     * @return a string concatenating the last n syllables in the array
+     * For example: if we have this word:
+     * TELEPHONE:
+     *   symbols:  T,EH1,L,AH0,F,OW2,N
+     *   syllables: EHL,AHF,OWN
+     * And if we want the last 2 syllables, we will return "AHFOWN"
+     */
+    private static String concatenateLastSyllables(String[] syllables, int n) {
+        if (syllables.length < n) return null;
+
+        StringBuilder builder = new StringBuilder();
+        for (int i = syllables.length - n; i < syllables.length; i++) {
+            builder.append(syllables[i]);
+        }
+        return builder.toString();
     }
 
 }

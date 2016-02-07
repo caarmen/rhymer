@@ -20,22 +20,14 @@
 package ca.rmen.rhymer;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-public class Rhymer {
+public abstract class Rhymer {
     private static final int THRESHOLD_TOO_MANY_RHYMES = 500;
-
-    private final Map<String, List<WordVariant>> words = new HashMap<>();
-    private final Map<String, SortedSet<String>> lastSyllableMap = new HashMap<>();
-    private final Map<String, SortedSet<String>> lastTwoSyllablesMap = new HashMap<>();
-    private final Map<String, SortedSet<String>> lastThreeSyllablesMap = new HashMap<>();
-    private SyllableParser syllableParser;
 
     /**
      * @return a list of RhymeResults.  Most words will have one RhymeResult.  Words with multiple possible
@@ -46,24 +38,22 @@ public class Rhymer {
         String lookupWord = word.toLowerCase(Locale.US);
 
         // The word doesn't exist in our dictionary
-        List<WordVariant> wordVariants = words.get(lookupWord);
+        List<WordVariant> wordVariants = getWordVariants(lookupWord);
         if (wordVariants == null) return results;
 
         // One RhymeResult per word variant (pronunciation)
         for (WordVariant wordVariant : wordVariants) {
 
-            String[] syllables = syllableParser.extractRhymingSyllables(wordVariant.symbols);
-
-            Set<String> matches1 = lookupWords(lookupWord, syllables, 1, lastSyllableMap);
+            Set<String> matches1 = getWordsWithLastSyllable(wordVariant.lastRhymingSyllable);
             Set<String> matches2 = new TreeSet<>();
             Set<String> matches3 = new TreeSet<>();
 
-            if (syllables.length >= 2) {
-                matches2 = lookupWords(lookupWord, syllables, 2, lastTwoSyllablesMap);
+            if (wordVariant.lastTwoRhymingSyllables != null) {
+                matches2 = getWordsWithLastTwoSyllables(wordVariant.lastTwoRhymingSyllables);
                 matches1.removeAll(matches2);
             }
-            if (syllables.length >= 3) {
-                matches3 = lookupWords(lookupWord, syllables, 3, lastThreeSyllablesMap);
+            if (wordVariant.lastThreeRhymingSyllables != null) {
+                matches3 = getWordsWithLastThreeSyllables(wordVariant.lastThreeRhymingSyllables);
                 matches1.removeAll(matches3);
                 matches2.removeAll(matches3);
             }
@@ -86,80 +76,10 @@ public class Rhymer {
         return results;
     }
 
-    /**
-     * @param word              the word for which we want to find rhyming words.
-     * @param syllables         the syllables of the word already parsed (we parse them before calling this method for performance).
-     * @param numberOfSyllables specifies the number of syllables to use when looking for rhyming words.
-     * @param syllablesMap      map of syllables to words: the key contains syllables of numberOfSyllables syllables.
-     * @return a list of words which rhyme with the last numberOfSyllables syllables of the given word
-     */
-    private static Set<String> lookupWords(String word, String[] syllables, int numberOfSyllables, Map<String, SortedSet<String>> syllablesMap) {
-        String lastSyllables = concatenateLastSyllables(syllables, numberOfSyllables);
-        Set<String> matches = new TreeSet<>(syllablesMap.get(lastSyllables));
-        matches.remove(word);
-        return matches;
-    }
-
-    /**
-     * @param symbolMap a map of phone symbols to phone types.
-     * @param words     a map of words to the list of word variants for each word
-     */
-    public void buildIndex(Map<String, PhoneType> symbolMap, Map<String, List<WordVariant>> words) {
-        this.words.clear();
-        this.words.putAll(words);
-        lastSyllableMap.clear();
-        lastTwoSyllablesMap.clear();
-        lastThreeSyllablesMap.clear();
-
-        syllableParser = new SyllableParser(symbolMap);
-        for (String word : words.keySet()) {
-            List<WordVariant> wordVariants = words.get(word);
-            for(WordVariant wordVariant : wordVariants) {
-                String[] syllables = syllableParser.extractRhymingSyllables(wordVariant.symbols);
-                if (syllables.length >= 3) {
-                    String lastThreeSyllables = concatenateLastSyllables(syllables, 3);
-                    indexWord(lastThreeSyllablesMap, lastThreeSyllables, word);
-                }
-                if (syllables.length >= 2) {
-                    String lastTwoSyllables = concatenateLastSyllables(syllables, 2);
-                    indexWord(lastTwoSyllablesMap, lastTwoSyllables, word);
-                }
-                String lastSyllable = syllables[syllables.length - 1];
-                indexWord(lastSyllableMap, lastSyllable, word);
-            }
-        }
-    }
-
-    /**
-     * @return a string concatenating the last n syllables in the array
-     * For example: if we have this word:
-     * TELEPHONE:
-     *   symbols:  T,EH1,L,AH0,F,OW2,N
-     *   syllables: EHL,AHF,OWN
-     * And if we want the last 2 syllables, we will return "AHFOWN"
-     */
-    private static String concatenateLastSyllables(String[] syllables, int n) {
-        if (syllables.length < n)
-            throw new IllegalArgumentException(String.format("Cannot extract %d syllables from list of %d syllables", n, syllables.length));
-
-        StringBuilder builder = new StringBuilder();
-        for (int i = syllables.length - n; i < syllables.length; i++) {
-            builder.append(syllables[i]);
-        }
-        return builder.toString();
-    }
-
-    /**
-     * Add a mapping for the given syllable to the given word, to the given map.
-     */
-    private void indexWord(Map<String, SortedSet<String>> map, String syllable, String word) {
-        SortedSet<String> wordsForSyllable = map.get(syllable);
-        if (wordsForSyllable == null) {
-            wordsForSyllable = new TreeSet<>();
-            map.put(syllable, wordsForSyllable);
-        }
-        wordsForSyllable.add(word);
-    }
+    protected abstract List<WordVariant> getWordVariants(String word);
+    protected abstract SortedSet<String> getWordsWithLastSyllable(String lastSyllable);
+    protected abstract SortedSet<String> getWordsWithLastTwoSyllables(String lastTwoSyllables);
+    protected abstract SortedSet<String> getWordsWithLastThreeSyllables(String lastThreeSyllables);
 
 
 }

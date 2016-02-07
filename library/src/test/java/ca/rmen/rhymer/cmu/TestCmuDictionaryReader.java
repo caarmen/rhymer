@@ -40,7 +40,8 @@ public class TestCmuDictionaryReader {
     }
 
     public static Map<String, List<WordVariant>> readWords() throws IOException {
-        return CmuDictionaryReader.readWords(new FileInputStream(WORDS_FILE));
+        SyllableParser syllableParser = new SyllableParser(readPhones());
+        return CmuDictionaryReader.readWords(syllableParser, new FileInputStream(WORDS_FILE));
     }
 
     /**
@@ -65,18 +66,24 @@ public class TestCmuDictionaryReader {
         Map<String, List<WordVariant>> words = readWords();
         Assert.assertNotNull(words);
         Assert.assertEquals(125074, words.size());
-        testWordSymbols("zynda", new String[]{"Z", "IH1", "N", "D", "AH0"}, words);
-        testWordSymbols("zyman", new String[]{"Z", "AY1", "M", "AH0", "N"}, words);
+        // ZYNDA  Z IH1 N D AH0
+        testWordSyllables("zynda", "AH", "IHNDAH", null, words);
+        // ZYMAN  Z AY1 M AH0 N
+        testWordSyllables("zyman", "AHN", "AYMAHN", null, words);
+        // CAT  K AE1 T
+        testWordSyllables("cat", "AET", null, null, words);
+        //CELEBRATE  S EH1 L AH0 B R EY2 T
+        testWordSyllables("celebrate", "EYT", "AHBREYT", "EHLAHBREYT", words);
     }
 
-    private void testWordSymbols(String word, String[] expectedSymbols, Map<String, List<WordVariant>> dict) {
+    private void testWordSyllables(String word, String expectedLastSyllable, String expectedLastTwoSyllables, String expectedLastThreeSyllables, Map<String, List<WordVariant>> dict) {
         List<WordVariant> wordVariants = dict.get(word);
         Assert.assertNotNull(wordVariants);
-        Assert.assertTrue(wordVariants.size() > 0);
-        String[] actualSymbols = wordVariants.get(0).symbols;
-        Assert.assertNotNull(actualSymbols);
-        Assert.assertEquals("Expected and actual symbols list are not the same size for word " + word, expectedSymbols.length, actualSymbols.length);
-        Assert.assertArrayEquals("Error parsing word " + word, expectedSymbols, actualSymbols);
+        Assert.assertTrue(wordVariants.size() == 1);
+        WordVariant wordVariant = wordVariants.get(0);
+        Assert.assertEquals("Last syllable differs " + word, expectedLastSyllable, wordVariant.lastRhymingSyllable);
+        Assert.assertEquals("Last two syllables differ " + word, expectedLastTwoSyllables, wordVariant.lastTwoRhymingSyllables);
+        Assert.assertEquals("Last three syllables differ " + word, expectedLastThreeSyllables, wordVariant.lastThreeRhymingSyllables);
     }
 
 }

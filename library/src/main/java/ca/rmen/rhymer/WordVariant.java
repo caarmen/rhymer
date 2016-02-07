@@ -33,13 +33,14 @@ public class WordVariant {
      */
     public final int variantNumber;
 
-    /**
-     * The list of phone symbols for this variant's pronunciation.
-     */
-    public final String[] symbols;
+    public final String lastRhymingSyllable;
+    public final String lastTwoRhymingSyllables;
+    public final String lastThreeRhymingSyllables;
 
-    public WordVariant(int variantNumber, String[] symbols) {
+    public WordVariant(int variantNumber, String lastRhymingSyllable, String lastTwoRhymingSyllables, String lastThreeRhymingSyllables) {
         this.variantNumber = variantNumber;
-        this.symbols = symbols;
+        this.lastRhymingSyllable = lastRhymingSyllable;
+        this.lastTwoRhymingSyllables = lastTwoRhymingSyllables;
+        this.lastThreeRhymingSyllables = lastThreeRhymingSyllables;
     }
 }

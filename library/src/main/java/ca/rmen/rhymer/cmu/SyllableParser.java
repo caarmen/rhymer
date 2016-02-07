@@ -16,7 +16,9 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with Rhymer.  If not, see <http://www.gnu.org/licenses/>.
  */
-package ca.rmen.rhymer;
+package ca.rmen.rhymer.cmu;
+
+import ca.rmen.rhymer.PhoneType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +43,7 @@ class SyllableParser {
      *
      * @return an array of rhyming syllables for the given list of phone symbols.
      */
-    public String[] extractRhymingSyllables(String[] symbols) {
+    String[] extractRhymingSyllables(String[] symbols) {
         List<String> syllables = new ArrayList<>();
 
         String currentSyllable = "";
@@ -61,4 +63,5 @@ class SyllableParser {
         if (!currentSyllable.isEmpty()) syllables.add(currentSyllable);
         return syllables.toArray(new String[syllables.size()]);
     }
+
 }

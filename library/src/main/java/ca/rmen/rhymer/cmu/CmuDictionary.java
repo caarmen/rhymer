@@ -19,6 +19,7 @@
 
 package ca.rmen.rhymer.cmu;
 
+import ca.rmen.rhymer.MemoryRhymer;
 import ca.rmen.rhymer.PhoneType;
 import ca.rmen.rhymer.Rhymer;
 import ca.rmen.rhymer.WordVariant;
@@ -44,9 +45,10 @@ public class CmuDictionary {
     public static Rhymer loadRhymer() throws IOException {
         InputStream phonesFile = CmuDictionary.class.getResourceAsStream(PHONES_FILE);
         InputStream wordsFile = CmuDictionary.class.getResourceAsStream(WORDS_FILE);
-        Rhymer rhymer = new Rhymer();
+        MemoryRhymer rhymer = new MemoryRhymer();
         Map<String, PhoneType> symbolsMap = CmuDictionaryReader.readPhones(phonesFile);
-        Map<String, List<WordVariant>> wordsMap = CmuDictionaryReader.readWords(wordsFile);
+        SyllableParser syllableParser = new SyllableParser(symbolsMap);
+        Map<String, List<WordVariant>> wordsMap = CmuDictionaryReader.readWords(syllableParser, wordsFile);
         rhymer.buildIndex(symbolsMap, wordsMap);
         return rhymer;
     }

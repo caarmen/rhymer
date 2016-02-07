@@ -17,10 +17,11 @@
  * along with Rhymer.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package ca.rmen.rhymer;
+package ca.rmen.rhymer.cmu;
 
 
-import ca.rmen.rhymer.cmu.TestCmuDictionaryReader;
+import ca.rmen.rhymer.PhoneType;
+import ca.rmen.rhymer.WordVariant;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -32,7 +33,7 @@ import java.util.Map;
 public class TestSyllableParser {
 
     /**
-     * Make sure each word in the dictionary has at least one symbol and at least one syllable.
+     * Make sure each word in the dictionary has at least least one rhyming syllable.
      */
     @Test
     public void testAllSyllables() throws IOException {
@@ -43,12 +44,7 @@ public class TestSyllableParser {
         for (String word : words.keySet()) {
             List<WordVariant> wordVariants = words.get(word);
             for(WordVariant wordVariant : wordVariants) {
-                String[] symbols = wordVariant.symbols;
-                Assert.assertNotNull(symbols);
-                Assert.assertTrue("word " + word + " has no symbols", symbols.length >= 1);
-                String[] syllables = syllableParser.extractRhymingSyllables(symbols);
-                Assert.assertNotNull(syllables);
-                Assert.assertTrue("word " + word + " has no syllables", syllables.length >= 1);
+                Assert.assertNotNull(wordVariant.lastRhymingSyllable);
             }
         }
     }
