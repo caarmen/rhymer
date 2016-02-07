@@ -49,7 +49,7 @@ public class CmuDictionary {
         Map<String, PhoneType> symbolsMap = CmuDictionaryReader.readPhones(phonesFile);
         SyllableParser syllableParser = new SyllableParser(symbolsMap);
         Map<String, List<WordVariant>> wordsMap = CmuDictionaryReader.readWords(syllableParser, wordsFile);
-        rhymer.buildIndex(symbolsMap, wordsMap);
+        rhymer.buildIndex(wordsMap);
         return rhymer;
     }
 }

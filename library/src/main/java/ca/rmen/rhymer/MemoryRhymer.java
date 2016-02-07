@@ -22,6 +22,7 @@ package ca.rmen.rhymer;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
@@ -34,7 +35,11 @@ public class MemoryRhymer extends Rhymer {
     private final Map<String, SortedSet<String>> lastTwoSyllablesMap = new HashMap<>();
     private final Map<String, SortedSet<String>> lastThreeSyllablesMap = new HashMap<>();
 
-    protected List<WordVariant> getWordVariants(String word){
+    public Set<String> getWords() {
+        return words.keySet();
+    }
+
+    public List<WordVariant> getWordVariants(String word){
         return words.get(word);
     }
 
@@ -51,10 +56,9 @@ public class MemoryRhymer extends Rhymer {
     }
 
     /**
-     * @param symbolMap a map of phone symbols to phone types.
      * @param words     a map of words to the list of word variants for each word
      */
-    public void buildIndex(Map<String, PhoneType> symbolMap, Map<String, List<WordVariant>> words) {
+    public void buildIndex(Map<String, List<WordVariant>> words) {
         this.words.clear();
         this.words.putAll(words);
         lastSyllableMap.clear();
