@@ -1,4 +1,4 @@
-The rhymer library uses the Carnegie Mellon Univeristy Pronunciation Dictionary.
+The rhymer library uses the Carnegie Mellon University Pronunciation Dictionary.
 
 The CMU pronunciation dictionary website is http://www.speech.cs.cmu.edu/cgi-bin/cmudict
 
