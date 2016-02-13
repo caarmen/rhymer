@@ -19,18 +19,20 @@
 
 package ca.rmen.rhymer;
 
+import java.io.Serializable;
+
 /**
  * A result for a search for rhymes on a word.
  * This object holds the list of words which rhyme with one particular variant
  * of a word.
  */
-public class RhymeResult {
+public class RhymeResult implements Serializable {
     /**
-     * The variant of the word.  In most cases, this is equal to the word itself. In some cases, there are
+     * The variant of the word.  In most cases, this is 0, when there is one pronunciation of the word.  Some words have
      * multiple pronunciations.  For example, the word TUESDAY has three variants: TUESDAY, TUESDAY(1) and TUESDAY(2).
      * This field indicates the specific variant for which we have lists of rhyming words.
      */
-    public final String variant;
+    public final int variantNumber;
 
     /**
      * Words which rhyme with the last syllable of our word variant.
@@ -47,8 +49,8 @@ public class RhymeResult {
      */
     public final String[] threeSyllableRhymes;
 
-    public RhymeResult(String variant, String[] oneSyllableRhymes, String[] twoSyllableRhymes, String[] threeSyllableRhymes) {
-        this.variant = variant;
+    public RhymeResult(int variantNumber, String[] oneSyllableRhymes, String[] twoSyllableRhymes, String[] threeSyllableRhymes) {
+        this.variantNumber = variantNumber;
         this.oneSyllableRhymes = oneSyllableRhymes;
         this.twoSyllableRhymes = twoSyllableRhymes;
         this.threeSyllableRhymes = threeSyllableRhymes;

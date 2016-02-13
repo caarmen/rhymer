@@ -58,6 +58,10 @@ public abstract class Rhymer {
                 matches2.removeAll(matches3);
             }
 
+            matches1.remove(word);
+            matches2.remove(word);
+            matches3.remove(word);
+
             // Some words, like "puppy", match way too many words.... any word
             // ending with an "ee" sound (IY0 phone).  If we end up in this situation,
             // completely ignore all the one-syllable matches, and only return
@@ -67,7 +71,7 @@ public abstract class Rhymer {
                 matches1.clear();
             }
 
-            RhymeResult result = new RhymeResult(word + "(" + wordVariant.variantNumber + ")",
+            RhymeResult result = new RhymeResult(wordVariant.variantNumber,
                     matches1.toArray(new String[matches1.size()]),
                     matches2.toArray(new String[matches2.size()]),
                     matches3.toArray(new String[matches3.size()]));
