@@ -10,37 +10,34 @@ To test out the library on the command-line:
     java -jar example/build/libs/example-all-1.0-SNAPSHOT.jar <word to rhyme>
 ```
 
-This brand new library is not yet available on a remote maven repository.
+If you want to build the library to include the library in your project:
+*Note*, the library is not yet available on jcenter.  In the meantime, add this repository to your build files:
+`"https://dl.bintray.com/caarmen/maven/"`
 
-If you want to build the library to include it in your project:
-
-To build the library:
-
-```
-./gradlew clean build
-```
-
-
-This will create the file `./library/build/libs/rhymer-<version>.jar` which you can include in your project.
-
-To deploy the jar to your local maven repository:
+For gradle:
 
 ```
-    ./gradlew clean install
+    maven {
+        url "https://dl.bintray.com/caarmen/maven/"
+    }
 ```
 
-Then include this maven dependency:
+Then add the dependency:
+
+maven:
 
 ```
-    <dependency>
-      <groupId>ca.rmen</groupId>
-      <artifactId>rhymer</artifactId>
-      <version>1.0-SNAPSHOT</version>
-    </dependency>
+<dependency>
+  <groupId>ca.rmen</groupId>
+  <artifactId>rhymer</artifactId>
+  <version>1.0.0</version>
+</dependency>
 ```
 
-Or gradle dependency:
+gradle:
 
 ```
-    compile 'ca.rmen:rhymer:1.0-SNAPSHOT'
+compile 'ca.rmen:rhymer:1.0.0'
 ```
+
+
