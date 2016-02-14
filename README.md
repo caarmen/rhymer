@@ -10,19 +10,7 @@ To test out the library on the command-line:
     java -jar example/build/libs/example-all-1.0-SNAPSHOT.jar <word to rhyme>
 ```
 
-If you want to build the library to include the library in your project:
-*Note*, the library is not yet available on jcenter.  In the meantime, add this repository to your build files:
-`"https://dl.bintray.com/caarmen/maven/"`
-
-For gradle:
-
-```
-    maven {
-        url "https://dl.bintray.com/caarmen/maven/"
-    }
-```
-
-Then add the dependency:
+The library is available on jcenter. To include it in your project:
 
 maven:
 
