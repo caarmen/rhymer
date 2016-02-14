@@ -40,7 +40,8 @@ public class CmuDictionary {
 
     /**
      * Build a rhymer based on the CMU dictionary files.
-     * @throws IOException
+     * @throws IOException if we couldn't read the dictionary file
+     * @return the Rhymer based on the CMU dictionary files.
      */
     public static Rhymer loadRhymer() throws IOException {
         InputStream phonesFile = CmuDictionary.class.getResourceAsStream(PHONES_FILE);

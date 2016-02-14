@@ -30,6 +30,7 @@ public abstract class Rhymer {
     private static final int THRESHOLD_TOO_MANY_RHYMES = 500;
 
     /**
+     * @param word the word for which we want to find rhymes.
      * @return a list of RhymeResults.  Most words will have one RhymeResult.  Words with multiple possible
      * pronunciations (word variants) will have one RhymeResult per variant.
      */
