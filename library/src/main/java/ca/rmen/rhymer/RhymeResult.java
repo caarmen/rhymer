@@ -35,6 +35,11 @@ public class RhymeResult implements Serializable {
     public final int variantNumber;
 
     /**
+     * Words which rhyme from the last stressed syllable to the end of the word.
+     */
+    public final String[] strictRhymes;
+
+    /**
      * Words which rhyme with the last syllable of our word variant.
      */
     public final String[] oneSyllableRhymes;
@@ -49,8 +54,9 @@ public class RhymeResult implements Serializable {
      */
     public final String[] threeSyllableRhymes;
 
-    public RhymeResult(int variantNumber, String[] oneSyllableRhymes, String[] twoSyllableRhymes, String[] threeSyllableRhymes) {
+    public RhymeResult(int variantNumber, String[] strictRhymes, String[] oneSyllableRhymes, String[] twoSyllableRhymes, String[] threeSyllableRhymes) {
         this.variantNumber = variantNumber;
+        this.strictRhymes = strictRhymes;
         this.oneSyllableRhymes = oneSyllableRhymes;
         this.twoSyllableRhymes = twoSyllableRhymes;
         this.threeSyllableRhymes = threeSyllableRhymes;

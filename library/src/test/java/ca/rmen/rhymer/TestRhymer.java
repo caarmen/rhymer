@@ -33,9 +33,18 @@ public class TestRhymer {
     @Test
     public void testRhymes() throws IOException {
         Rhymer rhymer = CmuDictionary.loadRhymer();
+        // RECUPERATE  R IH0 K UW1 P ER0 EY2 T
+        // DECORATE  D EH1 K ER0 EY2 T
         testShouldRhyme(rhymer, "recuperate", "redecorate", 2);
+        // RHYME  R AY1 M
+        // PARADIGM  P EH1 R AH0 D AY2 M
         testShouldRhyme(rhymer, "rhyme", "paradigm", 1);
-        testShouldRhyme(rhymer, "low", "hello", 1);
+        // BANJO  B AE1 N JH OW2
+        // GROW  G R OW1
+        testShouldRhyme(rhymer, "banjo", "grow", 1);
+        // LOW  L OW1
+        // HELLO  HH AH0 L OW1
+        testShouldRhyme(rhymer, "low", "hello", 0);
     }
 
     @Test
@@ -48,7 +57,7 @@ public class TestRhymer {
         List<RhymeResult> results = rhymer.getRhymingWords(word1);
         Assert.assertTrue(results.size() == 1);
         RhymeResult result = results.get(0);
-        String[] rhymes = numberOfSyllables == 1? result.oneSyllableRhymes : numberOfSyllables == 2 ? result.twoSyllableRhymes : result.threeSyllableRhymes;
+        String[] rhymes = numberOfSyllables == 0? result.strictRhymes : numberOfSyllables == 1? result.oneSyllableRhymes : numberOfSyllables == 2 ? result.twoSyllableRhymes : result.threeSyllableRhymes;
         List<String> rhymingWords = Arrays.asList(rhymes);
         Assert.assertTrue(word1 + " should rhyme with " + word2, rhymingWords.contains(word2));
     }

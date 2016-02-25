@@ -66,8 +66,11 @@ public class RhymerCli {
         Rhymer rhymer = CmuDictionary.loadRhymer();
         List<RhymeResult> results = rhymer.getRhymingWords(word);
         for (RhymeResult result : results) {
-            System.out.println("Results for " + result.variant + ":");
+            System.out.println("Results for " + result.variantNumber + ":");
 
+            System.out.println("  Strict matches:");
+            System.out.println("    " + Arrays.toString(result.strictRhymes));
+            System.out.println();
             System.out.println("  One-syllable matches:");
             System.out.println("    " + Arrays.toString(result.oneSyllableRhymes));
             System.out.println();
@@ -85,9 +88,9 @@ public class RhymerCli {
         Class.forName("org.sqlite.JDBC");
         Connection connection = DriverManager.getConnection("jdbc:sqlite:" + dbFile);
         Statement createTableStatement = connection.createStatement();
-        createTableStatement.execute("CREATE TABLE word_variants (word, variant_number, last_syllable, last_two_syllables, last_three_syllables)");
+        createTableStatement.execute("CREATE TABLE word_variants (word, variant_number, stress_syllables, last_syllable, last_two_syllables, last_three_syllables)");
         createTableStatement.close();
-        PreparedStatement insertStatement = connection.prepareStatement("INSERT INTO word_variants (word, variant_number, last_syllable, last_two_syllables, last_three_syllables) VALUES (?, ?, ?, ?, ?)");
+        PreparedStatement insertStatement = connection.prepareStatement("INSERT INTO word_variants (word, variant_number, stress_syllables, last_syllable, last_two_syllables, last_three_syllables) VALUES (?, ?, ?, ?, ?, ?)");
         MemoryRhymer rhymer = (MemoryRhymer) CmuDictionary.loadRhymer();
         Set<String> words = rhymer.getWords();
         int wordIndex = 0;
@@ -98,6 +101,7 @@ public class RhymerCli {
                 int column = 1;
                 insertStatement.setString(column++, word);
                 insertStatement.setInt(column++, wordVariant.variantNumber);
+                insertStatement.setString(column++, wordVariant.lastStressRhymingSyllables);
                 insertStatement.setString(column++, wordVariant.lastRhymingSyllable);
                 insertStatement.setString(column++, wordVariant.lastTwoRhymingSyllables);
                 insertStatement.setString(column++, wordVariant.lastThreeRhymingSyllables);

@@ -76,10 +76,11 @@ class CmuDictionaryReader {
                 }
                 String[] phones = line.substring(wordSeparator+2).split(" ");
                 String[] syllables = syllableParser.extractRhymingSyllables(phones);
+                String lastStressRhymingSyllables = syllableParser.extractStressRhymingSyllables(phones);
                 String lastRhymingSyllable = concatenateLastSyllables(syllables, 1);
                 String lastTwoRhymingSyllables = concatenateLastSyllables(syllables, 2);
                 String lastThreeRhymingSyllables = concatenateLastSyllables(syllables, 3);
-                WordVariant wordVariant = new WordVariant(variantNumber, lastRhymingSyllable, lastTwoRhymingSyllables, lastThreeRhymingSyllables);
+                WordVariant wordVariant = new WordVariant(variantNumber, lastStressRhymingSyllables, lastRhymingSyllable, lastTwoRhymingSyllables, lastThreeRhymingSyllables);
                 List<WordVariant> wordVariants = words.get(word);
                 if(wordVariants == null) {
                     wordVariants = new ArrayList<>();

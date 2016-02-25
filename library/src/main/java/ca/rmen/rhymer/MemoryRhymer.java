@@ -31,6 +31,7 @@ import java.util.TreeSet;
  */
 public class MemoryRhymer extends Rhymer {
     private final Map<String, List<WordVariant>> words = new HashMap<>();
+    private final Map<String, SortedSet<String>> lastStressSyllableMap = new HashMap<>();
     private final Map<String, SortedSet<String>> lastSyllableMap = new HashMap<>();
     private final Map<String, SortedSet<String>> lastTwoSyllablesMap = new HashMap<>();
     private final Map<String, SortedSet<String>> lastThreeSyllablesMap = new HashMap<>();
@@ -41,6 +42,11 @@ public class MemoryRhymer extends Rhymer {
 
     public List<WordVariant> getWordVariants(String word){
         return words.get(word);
+    }
+
+    @Override
+    protected SortedSet<String> getWordsWithLastStressSyllable(String lastStressSyllable) {
+        return lastStressSyllableMap.get(lastStressSyllable);
     }
 
     protected SortedSet<String> getWordsWithLastSyllable(String lastSyllable) {
@@ -61,6 +67,7 @@ public class MemoryRhymer extends Rhymer {
     public void buildIndex(Map<String, List<WordVariant>> words) {
         this.words.clear();
         this.words.putAll(words);
+        lastStressSyllableMap.clear();
         lastSyllableMap.clear();
         lastTwoSyllablesMap.clear();
         lastThreeSyllablesMap.clear();
@@ -68,6 +75,9 @@ public class MemoryRhymer extends Rhymer {
         for (String word : words.keySet()) {
             List<WordVariant> wordVariants = words.get(word);
             for(WordVariant wordVariant : wordVariants) {
+                if (wordVariant.lastStressRhymingSyllables != null ) {
+                    indexWord(lastStressSyllableMap, wordVariant.lastStressRhymingSyllables, word);
+                }
                 if (wordVariant.lastThreeRhymingSyllables != null ) {
                     indexWord(lastThreeSyllablesMap, wordVariant.lastThreeRhymingSyllables, word);
                 }

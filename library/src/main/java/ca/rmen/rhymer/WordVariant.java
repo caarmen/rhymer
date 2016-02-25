@@ -33,12 +33,14 @@ public class WordVariant {
      */
     public final int variantNumber;
 
+    public final String lastStressRhymingSyllables;
     public final String lastRhymingSyllable;
     public final String lastTwoRhymingSyllables;
     public final String lastThreeRhymingSyllables;
 
-    public WordVariant(int variantNumber, String lastRhymingSyllable, String lastTwoRhymingSyllables, String lastThreeRhymingSyllables) {
+    public WordVariant(int variantNumber, String lastStressRhymingSyllables, String lastRhymingSyllable, String lastTwoRhymingSyllables, String lastThreeRhymingSyllables) {
         this.variantNumber = variantNumber;
+        this.lastStressRhymingSyllables = lastStressRhymingSyllables;
         this.lastRhymingSyllable = lastRhymingSyllable;
         this.lastTwoRhymingSyllables = lastTwoRhymingSyllables;
         this.lastThreeRhymingSyllables = lastThreeRhymingSyllables;

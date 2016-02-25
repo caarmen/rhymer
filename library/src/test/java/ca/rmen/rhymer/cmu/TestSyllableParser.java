@@ -68,6 +68,14 @@ public class TestSyllableParser {
         testSyllableExtraction(syllableParser, new String[]{"R", "IH0", "K", "UW1", "P", "ER0", "EY2", "T"}, new String[]{"IHK", "UWP", "ER", "EYT"});
         // REDECORATE  R IY0 D EH1 K ER0 EY2 T
         testSyllableExtraction(syllableParser, new String[]{"R", "IH0", "D", "EH1", "K", "ER0", "EY2", "T"}, new String[]{"IHD", "EHK", "ER", "EYT"});
+        // TELEMEDICINE T EH2 L IH0 M EH1 D IH0 S AH0 N
+        testStressSyllableExtraction(syllableParser, new String[]{"T", "EH2", "L", "IH0", "M", "EH1", "D", "IH0", "S", "AH0", "N"}, "EHDIHSAHN");
+        // ABSTRACTION  AE0 B S T R AE1 K SH AH0 N
+        testStressSyllableExtraction(syllableParser, new String[]{"AE0", "B", "S", "T", "R", "AE1", "K", "SH", "AH0", "N"}, "AEKSHAHN");
+        // HI  HH AY1
+        testStressSyllableExtraction(syllableParser, new String[]{"HH", "AY1"}, "AY");
+        // OH  OW1
+        testStressSyllableExtraction(syllableParser, new String[]{"OW1"}, "OW");
     }
 
     private void testSyllableExtraction(SyllableParser syllableParser, String[] symbols, String[] expectedSyllables) {
@@ -75,6 +83,13 @@ public class TestSyllableParser {
         Assert.assertNotNull(actualSyllables);
         Assert.assertArrayEquals("The symbols " + Arrays.toString(symbols) + " were split into syllables " + Arrays.toString(actualSyllables)
                 + " instead of " + Arrays.toString(expectedSyllables), expectedSyllables, actualSyllables);
+    }
+
+    private void testStressSyllableExtraction(SyllableParser syllableParser, String[] symbols, String expectedSyllables) {
+        String actualSyllables = syllableParser.extractStressRhymingSyllables(symbols);
+        Assert.assertNotNull(actualSyllables);
+        Assert.assertEquals("The symbols " + Arrays.toString(symbols) + " were split into syllables " + actualSyllables
+                + " instead of " + expectedSyllables, expectedSyllables, actualSyllables);
     }
 
 }

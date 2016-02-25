@@ -45,6 +45,7 @@ public abstract class Rhymer {
         // One RhymeResult per word variant (pronunciation)
         for (WordVariant wordVariant : wordVariants) {
 
+            Set<String> matches0 = getWordsWithLastStressSyllable(wordVariant.lastStressRhymingSyllables);
             Set<String> matches1 = getWordsWithLastSyllable(wordVariant.lastRhymingSyllable);
             Set<String> matches2 = new TreeSet<>();
             Set<String> matches3 = new TreeSet<>();
@@ -59,9 +60,14 @@ public abstract class Rhymer {
                 matches2.removeAll(matches3);
             }
 
+            matches0.remove(word);
             matches1.remove(word);
             matches2.remove(word);
             matches3.remove(word);
+
+            matches1.removeAll(matches0);
+            matches2.removeAll(matches0);
+            matches3.removeAll(matches0);
 
             // Some words, like "puppy", match way too many words.... any word
             // ending with an "ee" sound (IY0 phone).  If we end up in this situation,
@@ -73,6 +79,7 @@ public abstract class Rhymer {
             }
 
             RhymeResult result = new RhymeResult(wordVariant.variantNumber,
+                    matches0.toArray(new String[matches0.size()]),
                     matches1.toArray(new String[matches1.size()]),
                     matches2.toArray(new String[matches2.size()]),
                     matches3.toArray(new String[matches3.size()]));
@@ -82,6 +89,7 @@ public abstract class Rhymer {
     }
 
     protected abstract List<WordVariant> getWordVariants(String word);
+    protected abstract SortedSet<String> getWordsWithLastStressSyllable(String lastStressSyllable);
     protected abstract SortedSet<String> getWordsWithLastSyllable(String lastSyllable);
     protected abstract SortedSet<String> getWordsWithLastTwoSyllables(String lastTwoSyllables);
     protected abstract SortedSet<String> getWordsWithLastThreeSyllables(String lastThreeSyllables);
