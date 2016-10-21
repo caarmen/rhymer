@@ -78,12 +78,17 @@ public abstract class Rhymer {
                 matches1.clear();
             }
 
-            RhymeResult result = new RhymeResult(wordVariant.variantNumber,
-                    matches0.toArray(new String[matches0.size()]),
-                    matches1.toArray(new String[matches1.size()]),
-                    matches2.toArray(new String[matches2.size()]),
-                    matches3.toArray(new String[matches3.size()]));
-            results.add(result);
+            if (!matches0.isEmpty()
+                    || !matches1.isEmpty()
+                    || !matches2.isEmpty()
+                    || !matches3.isEmpty()) {
+                RhymeResult result = new RhymeResult(wordVariant.variantNumber,
+                        matches0.toArray(new String[matches0.size()]),
+                        matches1.toArray(new String[matches1.size()]),
+                        matches2.toArray(new String[matches2.size()]),
+                        matches3.toArray(new String[matches3.size()]));
+                results.add(result);
+            }
         }
         return results;
     }
