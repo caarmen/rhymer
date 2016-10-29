@@ -39,9 +39,9 @@ public class TestRhymer {
         // RHYME  R AY1 M
         // PARADIGM  P EH1 R AH0 D AY2 M
         testShouldRhyme(rhymer, "rhyme", "paradigm", 1);
-        // BANJO  B AE1 N JH OW2
+        // BELGO  B EH1 L G OW2
         // GROW  G R OW1
-        testShouldRhyme(rhymer, "banjo", "grow", 1);
+        testShouldRhyme(rhymer, "belgo", "grow", 1);
         // LOW  L OW1
         // HELLO  HH AH0 L OW1
         testShouldRhyme(rhymer, "low", "hello", 0);

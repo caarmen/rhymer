@@ -72,9 +72,9 @@ public abstract class Rhymer {
             // Some words, like "puppy", match way too many words.... any word
             // ending with an "ee" sound (IY0 phone).  If we end up in this situation,
             // completely ignore all the one-syllable matches, and only return
-            // 2 and 3 syllable matches.
+            // strict, 2 and 3 syllable matches.
             // TODO maybe there is a better way to solve this problem.
-            if (matches1.size() > THRESHOLD_TOO_MANY_RHYMES && matches2.size() > 0) {
+            if (matches1.size() > THRESHOLD_TOO_MANY_RHYMES && (matches0.size() > 0 || matches2.size() > 0)) {
                 matches1.clear();
             }
 
