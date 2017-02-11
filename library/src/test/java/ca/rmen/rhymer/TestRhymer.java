@@ -45,12 +45,15 @@ public class TestRhymer {
         // LOW  L OW1
         // HELLO  HH AH0 L OW1
         testShouldRhyme(rhymer, "low", "hello", 0);
+        // HAPPY  HH AE1 P IY0
+        // PUPPY  P AH1 P IY0
+        testShouldRhyme(rhymer, "happy", "puppy", 1);
     }
 
     @Test
     public void testNotRhymes() throws IOException {
         Rhymer rhymer = CmuDictionary.loadRhymer();
-        testShouldntRhyme(rhymer, "puppy", "happy");
+        testShouldntRhyme(rhymer, "puppy", "happy", 500);
     }
 
     private void testShouldRhyme(Rhymer rhymer, String word1, String word2, int numberOfSyllables) {
@@ -62,8 +65,8 @@ public class TestRhymer {
         Assert.assertTrue(word1 + " should rhyme with " + word2, rhymingWords.contains(word2));
     }
 
-    private void testShouldntRhyme(Rhymer rhymer, String word1, String word2) {
-        List<RhymeResult> results = rhymer.getRhymingWords(word1);
+    private void testShouldntRhyme(Rhymer rhymer, String word1, String word2, int limit) {
+        List<RhymeResult> results = rhymer.getRhymingWords(word1, limit);
         for (RhymeResult result : results) {
             List<String> rhymingWords = Arrays.asList(result.oneSyllableRhymes);
             Assert.assertFalse(word1 + " shouldn't match with " + word2, rhymingWords.contains(word2));
