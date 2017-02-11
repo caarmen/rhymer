@@ -3,7 +3,7 @@ Change Log
 
 1.2.0  *(2017-02-11)*
 --------------------
-* Added optional `maxResults` parameter to `Rhymer.getRhymingWords()` to limit the number of results returned. By default, all results are returned, which is new behavior. Previously, "last-syllable" matches were ommitted completely if better rhymes were available (strict or "last-two-syllables").
+* Added optional `maxResults` parameter to `Rhymer.getRhymingWords()` to limit the number of results returned. By default, all results are returned, which is new behavior. Previously, "last-syllable" matches were omitted completely if better rhymes were available (strict or "last-two-syllables").
 
 1.1.2  *(2016-10-29)*
 --------------------
